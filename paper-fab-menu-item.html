@@ -7,10 +7,9 @@
     Code distributed by Google as part of the polymer project is also
     subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-<link rel="import" href="../polymer/polymer.html">
 
-<link rel="import" href="../core-icons/core-icons.html">
-<link rel="import" href="../core-tooltip/core-tooltip.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../paper-fab/paper-fab.html">
 
 <!--
@@ -30,54 +29,69 @@
 @status alpha
 @homepage http://cwdoh.github.io/paper-fab-menu
 -->
-<polymer-element name="paper-fab-menu-item" attributes="icon tooltip color src">
-  <template>
-    <style>
+<dom-module id="paper-fab-menu-item">
+  <style>
     :host {
       margin: 5px 5px;
     }
     </style>
+  <template>
 
-    <core-tooltip id="tooltip" label="{{tooltip}}" position="left">
-      <paper-fab id="icon" icon="{{icon}}" src="{{src}}" mini style="background-color: {{color}}"></paper-fab>
-    </core-tooltip>
+    <paper-tooltip id="tooltip" label="{{tooltip}}" position="left">
+      <paper-fab id="icon" icon="{{icon}}" src="{{src}}" mini="" style$="{{computeStyle(color)}}"></paper-fab>
+    </paper-tooltip>
 
   </template>
   <script>
     Polymer({
-      /**
-      * Set opened the icon of menu item.
-      *
-      * @attribute icon
-      * @type String
-      * @default 'info-outline'
-      */
-      icon: 'info-outline',
-
-      /**
-      * Set the tooltip text. Tooltips will be shown on the left side of menuitem.
-      *
-      * @attribute tooltip
-      * @type String
-      * @default ''
-      */
-      tooltip: '',
-
-      /**
-      * Set the background color of menu item.
-      *
-      * @attribute color
-      * @type Color
-      * @default 'red'
-      */
-      color: 'red',
-
-      ready: function() {
+      is: 'paper-fab-menu-item',
+      properties: {
+        /**
+        * Set the background color of menu item.
+        *
+        * @attribute color
+        * @type Color
+        * @default 'red'
+        */
+        color: {
+          type: String,
+          value: 'red',
+          notify: true
+        },
+        /**
+        * Set opened the icon of menu item.
+        *
+        * @attribute icon
+        * @type String
+        * @default 'info-outline'
+        */
+        icon: {
+          type: String,
+          value: 'info-outline',
+          notify: true
+        },
+        src: { notify: true },
+        /**
+        * Set the tooltip text. Tooltips will be shown on the left side of menuitem.
+        *
+        * @attribute tooltip
+        * @type String
+        * @default ''
+        */
+        tooltip: {
+          type: String,
+          value: '',
+          notify: true
+        }
+      },
+      ready: function () {
         if ('ontouchend' in document) {
           this.$.tooltip.show = true;
         }
       },
-
+      computeStyle: function (color) {
+        return 'background-color: ' + color;
+      }
     });
   </script>
-</polymer-element>
+</dom-module>
