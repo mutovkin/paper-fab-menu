@@ -24,7 +24,7 @@
   "dependencies": {
     "iron-icons": "Polymer/iron-icons",
     "iron-flex-layout": "Polymer/iron-flex-layout",
-    "iron-overlay-behavior": "Polymer/iron-overlay-behavior",
+    "iron-overlay-behavior": "Polymer/iron-overlay-behavior"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^2.0.5"
