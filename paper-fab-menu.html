@@ -31,23 +31,23 @@
 @homepage http://cwdoh.github.io/paper-fab-menu
 -->
 
-  <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+
 <dom-module id="paper-fab-menu">
+  <!-- Is deprecated. See https://github.com/Polymer/polymer/blob/master/PRIMER.md#external-stylesheets -->
+  <link rel="import" type="css" href="paper-fab-menu.css">
   <style>
-    /* TODO(polyup): For speed, consider reworking these styles with .classes
-                     and #ids rather than [attributes].
-    */
-    [layout] {
+    .layout {
       @apply(--layout);
     }
-    [layout][vertical] {
+    .layout.vertical {
       @apply(--layout-vertical);
     }
-    [layout][center] {
+    .layout.center {
       @apply(--layout-center);
     }
   </style>
-  <link rel="import" type="css" href="paper-fab-menu.css">
+
   <style>
       polyfill-next-selector { content: 'paper-fab-menu #fam paper-fab-menu-item'; }
       #fam content[select="paper-fab-menu-item"]::content * {
@@ -82,31 +82,32 @@
         TODO(polyup): convert bindings inside this dom-repeat instance below
         from {{foo}} to {{item.foo}}
      -->
-    <template is="dom-repeat" items="{{items}}">
-      <style>
-        polyfill-next-selector { content: 'paper-fab-menu #fam paper-fab-menu-item:nth-child(<span>{{item.index}}</span>)'; }
-        #fam content[select="paper-fab-menu-item"]::content *:nth-child(<span>{{item.index}}</span>) {
-          transition-delay: <span>{{item.delay.appear}}</span>s;
-        }
+  <template is="dom-repeat" items="{{items}}">
+    <style>
+      polyfill-next-selector { content: 'paper-fab-menu #fam paper-fab-menu-item:nth-child(<span>{{item.index}}</span>)'; }
+      #fam content[select="paper-fab-menu-item"]::content *:nth-child(<span>{{item.index}}</span>) {
+        transition-delay: <span>{{item.delay.appear}}</span>s;
+      }
 
-        polyfill-next-selector { content: 'paper-fab-menu #fam.show paper-fab-menu-item:nth-child(<span>{{item.index}}</span>)'; }
-        #fam.show content[select="paper-fab-menu-item"]::content *:nth-child(<span>{{item.index}}</span>) {
-          transition-delay: <span>{{item.delay.disappear}}</span>s;
-        }
-      </style>
-    </template>
+      polyfill-next-selector { content: 'paper-fab-menu #fam.show paper-fab-menu-item:nth-child(<span>{{item.index}}</span>)'; }
+      #fam.show content[select="paper-fab-menu-item"]::content *:nth-child(<span>{{item.index}}</span>) {
+        transition-delay: <span>{{item.delay.disappear}}</span>s;
+      }
+    </style>
+  </template>
 
   <template is="dom-if" if="{{overlay}}">
-    <iron-overlay-behavior id="overlay" layered="" backdrop="" transition="core-transition-fade" on-core-overlay-open="overlayOpenedChanged"></iron-overlay-behavior>
+    <iron-overlay-backdrop id="overlay" layered="" backdrop="" transition="core-transition-fade" on-core-overlay-open="overlayOpenedChanged"></iron-overlay-backdrop>
   </template>
-    <div layout="" vertical="" center="" class="container" id="fam">
-      <div layout="" vertical="" center="" style="position: absolute; overflow: visible; left:0; right: 0;">
-        <div layout="" vertical="" center="" class="item-container" style="position: absolute; bottom: 0;">
-          <content id="content" select="paper-fab-menu-item"></content>
-        </div>
+
+  <div class="container layout vertical center" id="fam">
+    <div style="position: absolute; overflow: visible; left:0; right: 0;" class="layout vertical center">
+      <div class="item-container layout vertical center" style="position: absolute; bottom: 0;">
+        <content id="content" select="paper-fab-menu-item"></content>
       </div>
-      <paper-fab icon="menu" id="trigger" on-click="toggle"></paper-fab>
     </div>
+    <paper-fab icon="menu" id="trigger" on-click="toggle"></paper-fab>
+  </div>
 
   </template>
   <script>
@@ -183,7 +184,7 @@
         */
         overlay: {
           type: Boolean,
-          value: false,
+          value: true,
           notify: true
         },
         overlayOpened: { observer: 'overlayOpenedChanged' },
@@ -218,6 +219,7 @@
        * @param {Object} detail
        */
       openedChanged: function () {
+        console.log('ddddd');
         this.update();
         this.fire('paper-fab-menu-open', this.opened);
         // workaround for multiple backdrops when closing fab-menu.
