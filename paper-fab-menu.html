@@ -36,7 +36,6 @@
 
 <dom-module id="paper-fab-menu">
   <!-- Is deprecated. See https://github.com/Polymer/polymer/blob/master/PRIMER.md#external-stylesheets -->
-
   <link rel="import" type="css" href="paper-fab-menu.css">
   <template>
 
@@ -202,10 +201,13 @@
           notify: true
         }
       },
+
       ready: function () {
         this.calculateTransitionEffects.apply(this);
         // set default icon
         this.$.trigger.icon = this.icon;
+
+        console.log(Polymer.dom(this).querySelector('#fam content[select="paper-fab-menu-item"]::content *'));
       },
 
       overlayOpenedChanged: function () {
@@ -250,7 +252,6 @@
        * @method toggle
        */
       toggle: function () {
-        console.log('toggle', this.overlay);
         this.opened = !this.opened;
       },
       /**
@@ -290,15 +291,17 @@
       durationChanged: function () {
         this.calculateTransitionEffects.apply(this);
       },
+
       calculateTransitionEffects: function () {
         // this should calculates delays of menu items and updates them into css.
-        var length = this.$.content.getDistributedNodes().length;
+        var length = Polymer.dom(this.$.content).getDistributedNodes().length;
         var duration = parseFloat(this.duration);
         var delta = this.duration / length;
-        this.items = [];
+        //this.items = [];
+        this.set('items', []);
         for (var index = 1; index <= length; index++) {
           var factor = delta * index;
-          this.items.push({
+          this.push('items', {
             index: index,
             delay: {
               appear: factor,
