@@ -9,7 +9,7 @@
 -->
 
 <link rel="import" href="../iron-icons/iron-icons.html">
-<!-- <link rel="import" href="../paper-tooltip/paper-tooltip.html"> -->
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../paper-fab/paper-fab.html">
 
 <!--
@@ -30,16 +30,15 @@
 @homepage http://cwdoh.github.io/paper-fab-menu
 -->
 <dom-module id="paper-fab-menu-item">
-  <style>
-    :host {
-      margin: 5px 5px;
-    }
-    </style>
-  <template>
 
-    <paper-tooltip id="tooltip" label="{{tooltip}}" position="left">
-      <paper-fab id="icon" icon="{{icon}}" src="{{src}}" mini="" style$="{{computeStyle(color)}}"></paper-fab>
-    </paper-tooltip>
+  <template>
+    <style>
+      :host {
+        margin: 5px 5px;
+      }
+    </style>
+    <paper-fab id="icon" icon="{{icon}}" src="{{src}}" mini="" style$="{{computeStyle(color)}}"></paper-fab>
+    <paper-tooltip id="tooltip" for="icon" position="left">{{tooltip}}</paper-tooltip>
 
   </template>
   <script>

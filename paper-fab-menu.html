@@ -12,6 +12,7 @@
 <link rel="import" href="../paper-fab/paper-fab.html">
 
 <link rel="import" href="paper-fab-menu-item.html">
+<link rel="import" href="paper-fab-menu-overlay.html">
 
 <!--
 `paper-fab-menu` creates a floating action button menu with paper elements. By default, the menu will be hide. Use `opened` or `toggle()` to show/hide the menu. On mobile device, tooltip is automatically shown, otherwise it will be hidden on desktop browsers.
@@ -35,20 +36,24 @@
 
 <dom-module id="paper-fab-menu">
   <!-- Is deprecated. See https://github.com/Polymer/polymer/blob/master/PRIMER.md#external-stylesheets -->
-  <link rel="import" type="css" href="paper-fab-menu.css">
-  <style>
-    .layout {
-      @apply(--layout);
-    }
-    .layout.vertical {
-      @apply(--layout-vertical);
-    }
-    .layout.center {
-      @apply(--layout-center);
-    }
-  </style>
 
-  <style>
+  <link rel="import" type="css" href="paper-fab-menu.css">
+  <template>
+
+    <style>
+      .layout {
+        @apply(--layout);
+      }
+      .layout.vertical {
+        @apply(--layout-vertical);
+      }
+      .layout.center {
+        @apply(--layout-center);
+      }
+
+    </style>
+
+    <style>
       polyfill-next-selector { content: 'paper-fab-menu #fam paper-fab-menu-item'; }
       #fam content[select="paper-fab-menu-item"]::content * {
         transition: opacity {{duration}}s, transform {{duration}}s, -moz-transform {{duration}}s, -webkit-transform {{duration}}s;
@@ -76,40 +81,36 @@
         -webkit-transform: translate3d(0, 100%, 0);
       }
     </style>
-  <template>
 
-    <!--
-        TODO(polyup): convert bindings inside this dom-repeat instance below
-        from {{foo}} to {{item.foo}}
-     -->
-  <template is="dom-repeat" items="{{items}}">
-    <style>
-      polyfill-next-selector { content: 'paper-fab-menu #fam paper-fab-menu-item:nth-child(<span>{{item.index}}</span>)'; }
-      #fam content[select="paper-fab-menu-item"]::content *:nth-child(<span>{{item.index}}</span>) {
-        transition-delay: <span>{{item.delay.appear}}</span>s;
-      }
+    <template is="dom-repeat" items="{{items}}">
+      <style>
+        polyfill-next-selector { content: 'paper-fab-menu #fam paper-fab-menu-item:nth-child(<span>{{item.index}}</span>)'; }
+        #fam content[select="paper-fab-menu-item"]::content *:nth-child(<span>{{item.index}}</span>) {
+          transition-delay: <span>{{item.delay.appear}}</span>s;
+        }
 
-      polyfill-next-selector { content: 'paper-fab-menu #fam.show paper-fab-menu-item:nth-child(<span>{{item.index}}</span>)'; }
-      #fam.show content[select="paper-fab-menu-item"]::content *:nth-child(<span>{{item.index}}</span>) {
-        transition-delay: <span>{{item.delay.disappear}}</span>s;
-      }
-    </style>
-  </template>
+        polyfill-next-selector { content: 'paper-fab-menu #fam.show paper-fab-menu-item:nth-child(<span>{{item.index}}</span>)'; }
+        #fam.show content[select="paper-fab-menu-item"]::content *:nth-child(<span>{{item.index}}</span>) {
+          transition-delay: <span>{{item.delay.disappear}}</span>s;
+        }
+      </style>
+    </template>
 
-  <template is="dom-if" if="{{overlay}}">
-    <iron-overlay-backdrop id="overlay" layered="" backdrop="" transition="core-transition-fade" on-core-overlay-open="overlayOpenedChanged"></iron-overlay-backdrop>
-  </template>
+    <template is="dom-if" if="{{overlay}}">
+      <paper-fab-menu-overlay id="overlay" layered="" with-backdrop style="z-index: 20;" on-iron-overlay-opened="overlayOpenedChanged" on-iron-overlay-closed="overlayOpenedChanged"></paper-fab-menu-overlay>
+    </template>
 
-  <div class="container layout vertical center" id="fam">
-    <div style="position: absolute; overflow: visible; left:0; right: 0;" class="layout vertical center">
-      <div class="item-container layout vertical center" style="position: absolute; bottom: 0;">
-        <content id="content" select="paper-fab-menu-item"></content>
+    <div class="container layout vertical center" id="fam">
+      <div style="position: absolute; overflow: visible; left:0; right: 0;" class="layout vertical center">
+        <div class="item-container layout vertical center" style="position: absolute; bottom: 0;">
+          <content id="content" select="paper-fab-menu-item"></content>
+        </div>
       </div>
+      <paper-fab icon="menu" id="trigger" on-tap="toggle"></paper-fab>
     </div>
-    <paper-fab icon="menu" id="trigger" on-click="toggle"></paper-fab>
-  </div>
 
   </template>
+
   <script>
     Polymer({
       is: 'paper-fab-menu',
@@ -187,7 +188,7 @@
           value: true,
           notify: true
         },
-        overlayOpened: { observer: 'overlayOpenedChanged' },
+
         /**
         * Set z-index of container to contain whole parts of menu. This will be depth to determine z-orders of elements including paper-fab-menu.
         *
@@ -206,9 +207,12 @@
         // set default icon
         this.$.trigger.icon = this.icon;
       },
+
       overlayOpenedChanged: function () {
+
         if (this.overlay) {
-          this.opened = this.$.overlay.opened;
+          var overlay = this.querySelector('#overlay');
+          this.opened = overlay.opened;
         }
       },
       /**
@@ -219,7 +223,6 @@
        * @param {Object} detail
        */
       openedChanged: function () {
-        console.log('ddddd');
         this.update();
         this.fire('paper-fab-menu-open', this.opened);
         // workaround for multiple backdrops when closing fab-menu.
@@ -247,6 +250,7 @@
        * @method toggle
        */
       toggle: function () {
+        console.log('toggle', this.overlay);
         this.opened = !this.opened;
       },
       /**
@@ -259,7 +263,9 @@
         this.$.trigger.icon = this.closeIcon;
         this.$.trigger.setAttribute('activate', '');
         if (this.overlay) {
-          this.$.overlay.open();
+          //this.$.overlay.open();
+          var overlay = this.querySelector('#overlay');
+          overlay.open();
         }
       },
       /**
@@ -272,7 +278,9 @@
         this.$.trigger.icon = this.icon;
         this.$.trigger.removeAttribute('activate');
         if (this.overlay) {
-          this.$.overlay.close();
+          //this.$.overlay.close();
+          var overlay = this.querySelector('#overlay');
+          overlay.close();
         }
       },
       update: function () {
