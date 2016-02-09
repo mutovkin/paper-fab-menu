@@ -35,8 +35,7 @@
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 
 <dom-module id="paper-fab-menu">
-  <!-- Is deprecated. See https://github.com/Polymer/polymer/blob/master/PRIMER.md#external-stylesheets -->
-  <link rel="import" type="css" href="paper-fab-menu.css">
+
   <template>
 
     <style>
@@ -49,51 +48,116 @@
       .layout.center {
         @apply(--layout-center);
       }
+    </style>
+
+    <style>
+      :host {
+        /*position: absolute !important;*/
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        padding: 0.5em;
+        padding-top: 0;
+
+        z-index: 110;
+
+        --paper-fab-menu-duration: 0.3s;
+        --paper-fab-menu-z-index: 1000;
+      }
+
+      .container {
+        /* layer hack */
+        transform: translateZ(0);
+        overflow: visible;
+      }
+
+      .container.show {
+        z-index: 10000;
+      }
+
+      .container.show {
+        z-index: var(--paper-fab-menu-z-index);
+      }
+
+      #trigger {
+        margin-top: 0.5em;
+      }
+
+      #trigger::shadow iron-icon {
+        transition: transform var(--paper-fab-menu-duration);
+        will-change: transform;
+      }
+
+      #trigger[activate]::shadow iron-icon {
+        transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+      }
+
+      #fam > ::content paper-fab-menu-item {
+        opacity: 0;
+        transform: scale(0);
+        -moz-transform: scale(0);
+        -webkit-transform: scale(0);
+      }
+
+      #fam.show > ::content paper-fab-menu-item {
+        opacity: 1;
+        transform: scale(1);
+        -moz-transform: scale(1);
+        -webkit-transform: scale(1);
+      }
+
+      .container .item-container {
+          left:0;
+          right: 0;
+          transition-property: transform, -moz-transform, -webkit-transform;
+          transform: scale3d(0, 0, 0);
+          -moz-transform: scale3d(0, 0, 0);
+          -webkit-transform: scale3d(0, 0, 0);
+      }
+
+
+      .container.show .item-container {
+          transition-delay: 0s;
+          transition-property: transform, -moz-transform, -webkit-transform;
+          transform: scale3d(1, 1, 1);
+          -moz-transform: scale3d(1, 1, 1);
+          -webkit-transform: scale3d(1, 1, 1);
+      }
+
+
 
     </style>
 
     <style>
-      polyfill-next-selector { content: 'paper-fab-menu #fam paper-fab-menu-item'; }
-      #fam content[select="paper-fab-menu-item"]::content * {
-        transition: opacity {{duration}}s, transform {{duration}}s, -moz-transform {{duration}}s, -webkit-transform {{duration}}s;
+
+      #fam > ::content paper-fab-menu-item {
+        will-change: opacity, transform;
+        transition: opacity var(--paper-fab-menu-duration), transform var(--paper-fab-menu-duration), -moz-transform var(--paper-fab-menu-duration), -webkit-transform var(--paper-fab-menu-duration);
       }
 
       .container .item-container {
-        transition-delay: {{duration}}s;
+        /*transition-delay: var(--paper-fab-menu-duration);*/
+        transition-delay: 0.3s;
       }
 
       /**
       * Below styles will prevent hijacking of tap event upon trigger button
       * by container height during hide floating menus.
       */
-      polyfill-next-selector { content: 'paper-fab-menu #fam:not(.show) .menus'; }
       #fam .menus {
         will-change: transform;
         transition-property: transform, -moz-transform, -webkit-transform;
       }
 
-      polyfill-next-selector { content: 'paper-fab-menu #fam:not(.show) .menus'; }
       #fam:not(.show) .menus {
-        transition-delay: {{duration}}s;
+        transition-delay: var(--paper-fab-menu-duration);
         transform: translate3d(0, 100%, 0);
         -moz-transform: translate3d(0, 100%, 0);
         -webkit-transform: translate3d(0, 100%, 0);
       }
     </style>
-
-    <template is="dom-repeat" items="{{items}}">
-      <style>
-        polyfill-next-selector { content: 'paper-fab-menu #fam paper-fab-menu-item:nth-child(<span>{{item.index}}</span>)'; }
-        #fam content[select="paper-fab-menu-item"]::content *:nth-child(<span>{{item.index}}</span>) {
-          transition-delay: <span>{{item.delay.appear}}</span>s;
-        }
-
-        polyfill-next-selector { content: 'paper-fab-menu #fam.show paper-fab-menu-item:nth-child(<span>{{item.index}}</span>)'; }
-        #fam.show content[select="paper-fab-menu-item"]::content *:nth-child(<span>{{item.index}}</span>) {
-          transition-delay: <span>{{item.delay.disappear}}</span>s;
-        }
-      </style>
-    </template>
 
     <template is="dom-if" if="{{overlay}}">
       <paper-fab-menu-overlay id="overlay" layered="" with-backdrop style="z-index: 20;" on-iron-overlay-opened="overlayOpenedChanged" on-iron-overlay-closed="overlayOpenedChanged"></paper-fab-menu-overlay>
@@ -111,6 +175,8 @@
   </template>
 
   <script>
+    'use strict';
+
     Polymer({
       is: 'paper-fab-menu',
       properties: {
@@ -202,16 +268,14 @@
         }
       },
 
+      observers: [
+        '_itemsChanged(items.splices)'
+      ],
+
       ready: function () {
         this.calculateTransitionEffects.apply(this);
         // set default icon
         this.$.trigger.icon = this.icon;
-
-        //console.log(this.querySelector('#fam content[select="paper-fab-menu-item"]::content *'));
-        console.log(Polymer.dom(this.root).querySelector('#fam .menus'));
-        console.log(Polymer.dom(this.root).querySelector('#fam > ::content *'));
-        console.log(Polymer.dom(this.$.content).getDistributedNodes());
-        console.log(Polymer.dom(this.root).querySelector('.container .item-container'));
       },
 
       overlayOpenedChanged: function () {
@@ -256,6 +320,7 @@
        * @method toggle
        */
       toggle: function () {
+        this._updateItemsDelay();
         this.opened = !this.opened;
       },
       /**
@@ -272,6 +337,7 @@
           var overlay = this.querySelector('#overlay');
           overlay.open();
         }
+
       },
       /**
        * The `close` method will hide the menu.
@@ -294,6 +360,28 @@
       },
       durationChanged: function () {
         this.calculateTransitionEffects.apply(this);
+      },
+
+      _itemsChanged: function() {
+        var children = Polymer.dom(this.$.content).getDistributedNodes();
+
+        this._updateItemsDelay();
+      },
+
+      _updateItemsDelay: function() {
+        var length = this.items.length;
+        var children = Polymer.dom(this.$.content).getDistributedNodes();
+
+        for (var i = 0; i < length; i++) {
+
+          if (this.$.fam.classList.contains('show')) {
+            children[i].style.transitionDelay = this.items[i].delay.appear + 's';
+          }
+          else {
+            children[i].style.transitionDelay = this.items[i].delay.disappear + 's';
+          }
+
+        }
       },
 
       calculateTransitionEffects: function () {
