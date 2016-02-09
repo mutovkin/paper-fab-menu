@@ -137,9 +137,8 @@
         transition: opacity var(--paper-fab-menu-duration), transform var(--paper-fab-menu-duration), -moz-transform var(--paper-fab-menu-duration), -webkit-transform var(--paper-fab-menu-duration);
       }
 
-      .container .item-container {
-        /*transition-delay: var(--paper-fab-menu-duration);*/
-        transition-delay: 0.3s;
+      .container:not(.show) .item-container {
+        transition-delay: var(--paper-fab-menu-duration);
       }
 
       /**
