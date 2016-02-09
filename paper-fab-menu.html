@@ -207,7 +207,11 @@
         // set default icon
         this.$.trigger.icon = this.icon;
 
-        console.log(Polymer.dom(this).querySelector('#fam content[select="paper-fab-menu-item"]::content *'));
+        //console.log(this.querySelector('#fam content[select="paper-fab-menu-item"]::content *'));
+        console.log(Polymer.dom(this.root).querySelector('#fam .menus'));
+        console.log(Polymer.dom(this.root).querySelector('#fam > ::content *'));
+        console.log(Polymer.dom(this.$.content).getDistributedNodes());
+        console.log(Polymer.dom(this.root).querySelector('.container .item-container'));
       },
 
       overlayOpenedChanged: function () {
