@@ -94,14 +94,14 @@
         -webkit-transform: rotate(360deg);
       }
 
-      #fam > ::content paper-fab-menu-item {
+      #fam > ::content paper-fab-menu-item::shadow paper-fab {
         opacity: 0;
         transform: scale(0);
         -moz-transform: scale(0);
         -webkit-transform: scale(0);
       }
 
-      #fam.show > ::content paper-fab-menu-item {
+      #fam.show > ::content paper-fab-menu-item::shadow paper-fab {
         opacity: 1;
         transform: scale(1);
         -moz-transform: scale(1);
@@ -132,8 +132,8 @@
 
     <style>
 
-      #fam > ::content paper-fab-menu-item {
-        will-change: opacity, transform;
+      #fam > ::content paper-fab-menu-item::shadow paper-fab {
+        /*will-change: opacity, transform;*/
         transition: opacity var(--paper-fab-menu-duration), transform var(--paper-fab-menu-duration), -moz-transform var(--paper-fab-menu-duration), -webkit-transform var(--paper-fab-menu-duration);
       }
 
@@ -373,12 +373,17 @@
         var children = Polymer.dom(this.$.content).getDistributedNodes();
 
         for (var i = 0; i < length; i++) {
+          var target = Polymer.dom(children[i].root).querySelector('paper-fab');
+
+          if (target == undefined) {
+            continue;
+          }
 
           if (this.$.fam.classList.contains('show')) {
-            children[i].style.transitionDelay = this.items[i].delay.appear + 's';
+            target.style.transitionDelay = this.items[i].delay.appear + 's';
           }
           else {
-            children[i].style.transitionDelay = this.items[i].delay.disappear + 's';
+            target.style.transitionDelay = this.items[i].delay.disappear + 's';
           }
 
         }
