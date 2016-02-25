@@ -20,7 +20,7 @@
   <link href="../paper-button/paper-button.html" rel="import">
 
   <link href="../paper-dialog/paper-dialog.html" rel="import">
-  <link href="../paper-dialog/paper-action-dialog.html" rel="import">
+  <!-- <link href="../paper-dialog/paper-action-dialog.html" rel="import"> -->
 
   <style>
     body {
@@ -51,11 +51,11 @@
     <paper-fab-menu-item icon="list" color="orange;" tooltip="List"></paper-fab-menu-item>
   </paper-fab-menu>
 
-  <paper-action-dialog backdrop autoCloseDisabled layered="false">
+  <paper-dialog backdrop autoCloseDisabled layered="false">
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
 
     <paper-button affirmative autofocus>Tap me to close</paper-button>
-  </paper-action-dialog>
+  </paper-dialog>
 
   <script type="text/javascript">
     var dialog = document.querySelector('paper-action-dialog');

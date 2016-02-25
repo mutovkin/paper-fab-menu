@@ -158,16 +158,14 @@
       }
     </style>
 
-    <template is="dom-if" if="{{overlay}}">
-      <paper-fab-menu-overlay id="overlay" layered="" with-backdrop style="z-index: 20;" on-iron-overlay-opened="overlayOpenedChanged" on-iron-overlay-closed="overlayOpenedChanged"></paper-fab-menu-overlay>
-    </template>
-
     <div class="container layout vertical center" id="fam">
-      <div style="position: absolute; overflow: visible; left:0; right: 0;" class="layout vertical center">
-        <div class="item-container layout vertical center" style="position: absolute; bottom: 0;">
-          <content id="content" select="paper-fab-menu-item"></content>
+      <paper-fab-menu-overlay id="overlay" with-backdrop={{overlay}} on-iron-overlay-opened="overlayOpenedChanged" on-iron-overlay-closed="overlayOpenedChanged"></paper-fab-menu-overlay>
+        <div style="position: absolute; overflow: visible; left:0; right: 0;" class="layout vertical center">
+          <div class="item-container layout vertical center" style="position: absolute; bottom: 0;">
+            <content id="content" select="paper-fab-menu-item"></content>
+          </div>
         </div>
-      </div>
+
       <paper-fab icon="menu" id="trigger" on-tap="toggle"></paper-fab>
     </div>
 
@@ -178,6 +176,7 @@
 
     Polymer({
       is: 'paper-fab-menu',
+
       properties: {
         /**
         * Set the icon of main button to close floating menu
@@ -260,11 +259,11 @@
         * @type Integer
         * @default 10000
         */
-        zIndex: {
-          type: Number,
-          value: 10000,
-          notify: true
-        }
+        // zIndex: {
+        //   type: Number,
+        //   value: 10000,
+        //   notify: true
+        // }
       },
 
       observers: [
@@ -296,21 +295,22 @@
         this.fire('paper-fab-menu-open', this.opened);
         // workaround for multiple backdrops when closing fab-menu.
         if (!this.opened) {
-          var backdrops = document.querySelectorAll('html div.core-overlay-backdrop');
-          if (backdrops.length <= 1)
-            return;
-          if (this.overlay) {
-            for (l in backdrops) {
-              if (backdrops[l] != this.$.overlay.scrim) {
-                // add core-opened to other backdrop for workaround
-                backdrops[l].classList.add('core-opened');
-                // remove overlay of fab-menu.
-                this.$.overlay.scrim.remove();
-                // just do this at first backdrop.
-                return;
-              }
-            }
-          }
+          //console.log(this.overlay)
+          // var backdrops = document.querySelectorAll('html iron-overlay-backdrop');
+          // if (backdrops.length <= 1)
+          //   return;
+          // if (this.overlay) {
+          //   for (l in backdrops) {
+          //     if (backdrops[l] != this.$.overlay.scrim) {
+          //       // add core-opened to other backdrop for workaround
+          //       backdrops[l].classList.add('core-opened');
+          //       // remove overlay of fab-menu.
+          //       this.$.overlay.scrim.remove();
+          //       // just do this at first backdrop.
+          //       return;
+          //     }
+          //   }
+          // }
         }
       },
       /**
@@ -332,9 +332,9 @@
         this.$.trigger.icon = this.closeIcon;
         this.$.trigger.setAttribute('activate', '');
         if (this.overlay) {
-          //this.$.overlay.open();
-          var overlay = this.querySelector('#overlay');
-          overlay.open();
+          this.$.overlay.open();
+          //var overlay = this.querySelector('#overlay');
+          //overlay.open();
         }
 
       },
@@ -348,9 +348,9 @@
         this.$.trigger.icon = this.icon;
         this.$.trigger.removeAttribute('activate');
         if (this.overlay) {
-          //this.$.overlay.close();
-          var overlay = this.querySelector('#overlay');
-          overlay.close();
+          this.$.overlay.close();
+          //var overlay = this.querySelector('#overlay');
+          //overlay.close();
         }
       },
       update: function () {
