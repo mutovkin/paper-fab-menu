@@ -3,3 +3,7 @@ node_modules
 dist
 .sass-cache
 .tmp
+
+#IntelliJ Idea Project folder and file
+.idea
+*.iml
