@@ -17,11 +17,20 @@
 ##### Example
 
     <paper-fab-menu icon="menu" closeIcon="close" duration="0.3">
-      <paper-fab-menu-item icon="info-outline" color="blue;" tooltip="Information"></paper-fab-menu-item>
-      <paper-fab-menu-item icon="alarm" color="purple;" tooltip="Alarm"></paper-fab-menu-item>
-      <paper-fab-menu-item icon="star-outline" color="green;" tooltip="Favorites"></paper-fab-menu-item>
-      <paper-fab-menu-item icon="list" color="orange;" tooltip="List"></paper-fab-menu-item>
+      <paper-fab-menu-item icon="info-outline" tooltip="Information"></paper-fab-menu-item>
+      <paper-fab-menu-item icon="alarm"  tooltip="Alarm"></paper-fab-menu-item>
+      <paper-fab-menu-item icon="star-outline"  tooltip="Favorites"></paper-fab-menu-item>
+      <paper-fab-menu-item icon="list"  tooltip="List"></paper-fab-menu-item>
     </paper-fab-menu>
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--paper-fab-menu-item-background` | The background color of the button | `--accent-color`
+
 
 @element paper-fab-menu-item
 @blurb `paper-fab-menu-item` creates a item of floating action button menu with paper elements.
@@ -35,8 +44,13 @@
       :host {
         margin: 5px 5px;
       }
+
+      #icon {
+        --paper-fab-background: var(--paper-fab-menu-item-background, --accent-color);
+      }
+
     </style>
-    <paper-fab id="icon" icon="{{icon}}" src="{{src}}" mini="" style$="{{computeStyle(color)}}"></paper-fab>
+    <paper-fab id="icon" icon="{{icon}}" src="{{src}}" mini></paper-fab>
     <paper-tooltip id="tooltip" for="icon" position="left">{{tooltip}}</paper-tooltip>
 
   </template>
@@ -45,37 +59,28 @@
       is: 'paper-fab-menu-item',
       properties: {
         /**
-        * Set the background color of menu item.
-        *
-        * @attribute color
-        * @type Color
-        * @default 'red'
-        */
-        color: {
-          type: String,
-          value: 'red',
-          notify: true
-        },
-        /**
-        * Set opened the icon of menu item.
-        *
-        * @attribute icon
-        * @type String
-        * @default 'info-outline'
-        */
+         * Set opened the icon of menu item.
+         *
+         * @attribute icon
+         * @type String
+         * @default 'info-outline'
+         */
         icon: {
           type: String,
           value: 'info-outline',
           notify: true
         },
-        src: { notify: true },
+        src: {
+          type: String,
+          notify: true
+        },
         /**
-        * Set the tooltip text. Tooltips will be shown on the left side of menuitem.
-        *
-        * @attribute tooltip
-        * @type String
-        * @default ''
-        */
+         * Set the tooltip text. Tooltips will be shown on the left side of menuitem.
+         *
+         * @attribute tooltip
+         * @type String
+         * @default ''
+         */
         tooltip: {
           type: String,
           value: '',
@@ -86,9 +91,6 @@
         if ('ontouchend' in document) {
           this.$.tooltip.show = true;
         }
-      },
-      computeStyle: function (color) {
-        return 'background-color: ' + color;
       }
     });
   </script>
