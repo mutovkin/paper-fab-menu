@@ -357,7 +357,11 @@
         }
       },
       update: function () {
-        this.$.fam.classList.toggle('show', this.opened);
+        if(this.opened) {
+          this.$.fam.classList.add('show');
+        } else {
+          this.$.fam.classList.remove('show');
+        }
         this[this.opened ? 'open' : 'close']();
       },
       durationChanged: function () {
